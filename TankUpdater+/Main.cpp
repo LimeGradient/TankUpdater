@@ -2,38 +2,41 @@
 #include <fstream>
 #include <string>
 #include <string.h>
-#include "Server.h"
+#include <cpr/cpr.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     #define PATH "\\C:\\Users\\Kevin Burns\\Documents\\VERSION.tanks"
-
 #elif __APPLE__ || __linux__
     #define PATH "Users/kevinburns/Documents/VERSION.tanks"
-	#include <arpa/inet.h>
-	#include <sys/socket.h>
-	#include <unistd.h>
 #endif
 
-std::string version = "1.0";
+std::string latestVersion() {
+	cpr::Response r = cpr::Get(cpr::Url{"https://tank-version-manager.herokuapp.com"});
+	std::cout << r.status_code << std::endl;
+	std::cout << r.text << std::endl;
+	return r.text;
+}
 
-bool isLatestVersion(std::string latestVersion) {
+bool isLatestVersion() {
 	using namespace std;
 
 	string content;
 	ifstream file(PATH);
 	while (getline(file, content)) {
-		if (content != latestVersion) {
+		if (content.compare(latestVersion) != 0) {
 			return false;
+		}
+		else {
+			return true;
 		}
 	}
 	file.close();
-	return true;
 }
 
 int main() {
-	if (isLatestVersion("1.0")) {
-		UnixServer us;
-		us.StartClient();
+	if (isLatestVersion()) {
+		std::cout << "Latest Version Installed" << std::endl;
+		return 0;
 	} else {
 		std::cout << "Needs Update" << std::endl;
 		return -1;
