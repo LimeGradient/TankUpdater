@@ -7,14 +7,16 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     #define PATH "\\C:\\Users\\Kevin Burns\\Documents\\VERSION.tanks"
 #elif __APPLE__ || __linux__
-    #define PATH "Users/kevinburns/Documents/VERSION.tanks"
+    #define PATH "/Users/kevinburns/Documents/TankUpdater/TankUpdater+/VERSION.tanks"
 #endif
 
-std::string latestVersion() {
+std::string latestVersion;
+char *version;
+
+void GetLatestVersion() {
 	cpr::Response r = cpr::Get(cpr::Url{"https://tank-version-manager.herokuapp.com"});
-	std::cout << r.status_code << std::endl;
 	std::cout << r.text << std::endl;
-	return r.text;
+	latestVersion = r.text;
 }
 
 bool isLatestVersion() {
@@ -22,14 +24,12 @@ bool isLatestVersion() {
 
 	string content;
 	ifstream file(PATH);
-	while (getline(file, content)) {
-		if (content.compare(latestVersion) != 0) {
-			return false;
-		}
-		else {
-			return true;
-		}
+	GetLatestVersion();
+	getline(file, content);
+	if (content != latestVersion) {
+		return false;
 	}
+	return true;
 	file.close();
 }
 
