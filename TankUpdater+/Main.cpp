@@ -134,7 +134,7 @@ bool download(const std::string& url, const std::string& file_path)
 }
 
 void Download() {
-    std::string url = "https://tank-version-manager.herokuapp.com/download.zip";
+    std::string url = "https://tank-version-manager.herokuapp.com/update/download.zip";
     std::string file_path = extract_file_name(url);
     if(download(url, file_path)) {
         
@@ -142,7 +142,7 @@ void Download() {
 }
 
 void GetLatestVersion() {
-	cpr::Response r = cpr::Get(cpr::Url{"https://tank-version-manager.herokuapp.com/version"});
+	cpr::Response r = cpr::Get(cpr::Url{"https://tank-version-manager.herokuapp.com/update/version"});
 	std::cout << r.text << std::endl;
 	latestVersion = r.text;
 }
